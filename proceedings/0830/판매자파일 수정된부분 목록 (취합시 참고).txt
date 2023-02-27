@@ -1,0 +1,37 @@
+<수정된 부분 목록>
+---컨트롤러--
+ContentController
+SellerContentController
+
+--mapper--
+ContentSQLMapper
+SellerContentSQLMapper
+
+--서비스--
+ContentService
+SellerContentService
+
+--서비스impl--
+ContentServiceImpl
+SellerContentServiceImpl
+
+--vo--
+OrderListVO (새로 생성됨)
+
+(얼마나 합쳐져있는지 몰라서 새로 생성된 vo는 비교하면서 제대로 확인 필요)
+
+--jsp--
+readOrderPage (새로 생성됨)
+sellerDashboardPage (새로 생성됨)
+sellerAccountEditPage
+sellerAccountManageMainPage
+sellerMainPage
+sellerMemberManagePage
+sellerNewAccountPage
+sellerOrderManagePage
+sellerPaycheckManagePage
+sellerProductManagePage
+sellerQnAManagePage
+sellerReviewManagePage
+
+(sellerNewProduct는 내가 한게 아니니 저거로 복붙하면 큰일남!)

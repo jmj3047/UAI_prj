@@ -1,0 +1,97 @@
+0806 회의록
+1. 역할 분담
+결과: 첨부 파일 확인
+
+2. 올릴 서버 결정 및 정상 구동 확인
+결과: 이민우
+
+DB 접속용 정보
+퍼블릭 아이피: 35.171.153.100
+DB 아이디: UAIDB
+DB 패스워드: uaipw
+
+***각자 주로 개발할 pc/노트북에서 접속되는지 확인해보기
+
+
+3. 패키지/클래스이름
+결과:
+
+ja.uai.controller.*
+-----컨트롤러 패키지  (3)----
+
+(클래스)
+MemberController.java
+ContentController.java
+OrderController.java
+멤버관련 
+내용관련
+주문관련
+
+-----서비스 패키지(4)------
+ja.uai.service.*
+
+MemberService.java (interface)
+BoardService.java (interface)
+OrderService.java (interface)
+FileService.java (interface)
+멤버관련인터페이스
+게시판별인터페이스
+주문관련인터페이스
+파일관련인터페이스
+
+
+-----인터페이스상속받은클래스패키지(4)-----
+ja.uai.service.impl.*
+MemberServiceImpl.java (interface)
+BoardServiceImpl.java (interface)
+OrderServiceImpl.java (interface)
+FileServiceImpl.java (interface)
+
+멤버관련인터페이스상속클래스
+게시판별인터페이스상속클래스
+주문관련인터페이스상속클래스
+파일관련인터페이스상속클래스
+
+
+-------mapper 패키지(4)-------
+ja.uai.mapper.*
+
+MemberSQLMapper.java
+BoardSQLMapper.java
+OrderSQLMapper.java
+FileSQLMapper.java
+
+멤버sql매퍼
+게시판별sql매퍼
+주문관련sql매퍼
+파일sql매퍼
+
+
+-----vo 패키지 (5)-------
+ja.uai.vo.*
+
+
+MemebrVO.java
+SessionVO.java
+ContentVO.java
+FileVO.java
+BoardVO.java
+RecommendVO.java
+
+멤버vo
+세션vo
+(쿠키vo)
+게시판컨텐츠vo
+파일vo
+게시판출력데이터용VO
+추천데이터vo
+-------------------
+
+
+4. DB 구조 수정
+결과: 첨부파일 확인.
+
+
+
+
+

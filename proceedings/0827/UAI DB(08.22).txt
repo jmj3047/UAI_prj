@@ -1,0 +1,110 @@
+08.22 DB 변경사항
+1. PRODUCT TABLE 변경 ( VO 변경해주시고, 전부 string으로 통일 부탁드립니다 )
+
+CREATE TABLE Product 
+P_IDX NUMBER(8) PRIMARY KEY,
+P_NAME VARCHAR2(100),
+P_TYPE NUMBER(8),       --P_Type: 0-언어, 1-IT/컴퓨터, 2-미술, 3-음악, 4-스포츠, 5-기타
+P_ORIGINALPRICE NUMBER(8),             
+P_NOWPRICE NUMBER(8),           
+P_TEACHER VARCHAR2(40),
+P_MAXSTUDENT NUMBER(8),
+P_STARTDATE DATE,              
+P_LASTDATE DATE,
+P_LOCATION VARCHAR2(40),
+P_LECTUREDAY VARCHAR2(40),      
+P_LECTURETIME VARCHAR2(40),
+P_LECTUREINFO VARCHAR2(2000),    
+P_TEACHERINFO VARCHAR2(2000),   
+P_OTHERINFO VARCHAR2(2000),     
+P_TOTALSALECOUNT NUMBER(8),
+P_POSTDATE DATE,
+P_STARRATE NUMBER(8,2)
+);
+
+2. HISTORY_PRICE TABLE 추가
+
+CREATE TABLE HISTORY_PRICE(
+P_IDX NUMBER(8),
+H_PRICE NUMBER(8),
+H_DATE DATE
+);
+
+3. STARRATE TABLE 추가( 별점 관리 )
+
+CREATE TABLE StarRate(
+S_RATE NUMBER(8),
+P_IDX NUMBER(8),
+M_IDX NUMBER(8)
+);
+
+4. 별점 테이블에 별점 추가 시 자동으로 PRODUCT TABLE의 P_STARRATE에 평균값을 업데이트
+@@@@@@ 아래의 5개의 쿼리를 한번씩 실행시켜주세요! 컴파일 되었다고 뜨면 잘 실행된 것입니다.
+
+-- 별점 테이블 복사본
+CREATE TABLE StarRate_copy AS SELECT * FROM StarRate;
+
+--별점 원본 테이블에 새로운 데이터 입력 시 복사 테이블에 동일 입력
+CREATE OR REPLACE TRIGGER INSERT_STAR AFTER INSERT ON StarRate FOR EACH ROW
+BEGIN
+ insert into StarRate_copy
+ values (:NEW.s_rate, :NEW.p_idx, :NEW.m_idx);
+END;
+/
+
+--별점 원본 테이블에 데이터 수정 시 복사 테이블에 동일 입력
+CREATE OR REPLACE TRIGGER UPDATE_STAR AFTER UPDATE ON StarRate FOR EACH ROW
+BEGIN
+  update StarRate_copy
+  set s_rate = :NEW.s_rate
+  where p_idx = :NEW.p_idx and m_idx = :NEW.m_idx;
+END;
+/
+
+--별점 테이블에 insert 발생 시 평점 계산하여 상품 테이블에 update하는 트리거
+
+CREATE OR REPLACE TRIGGER UPDATE_PRODUCT_STAR_1 AFTER INSERT ON StarRate FOR EACH ROW FOLLOWS INSERT_STAR
+BEGIN 
+    update Product
+    set P_STARRATE = (select avg(s_rate) 
+                             from StarRate_copy
+                             group by p_idx
+                             having p_idx = :NEW.p_idx)
+         where p_idx = :NEW.p_idx;
+END;
+/
+
+--별점 테이블에서 update 발생 시 평점 계산하여 상품 테이블에 update하는 트리거
+
+CREATE OR REPLACE TRIGGER UPDATE_PRODUCT_STAR_2 AFTER UPDATE ON StarRate FOR EACH ROW FOLLOWS UPDATE_STAR
+BEGIN update Product
+         set P_STARRATE = (select avg(s_rate) 
+                             from StarRate_copy
+                             group by p_idx
+                             having p_idx = :NEW.p_idx)
+         where p_idx = :NEW.p_idx;
+END;
+/
+
+5. HISTORY_PRICE 테이블에 가격 입력 시 자동으로 PRODUCT TABLE의 P_NOWPRICE 에 가격을 업데이트
+@@@@@@@@ 아래의 쿼리도 동일하게 한번씩 실행시켜 주세요
+
+-- 가격 이력 테이블 복사본
+CREATE TABLE HISTORY_PRICE_copy AS SELECT * FROM HISTORY_PRICE;
+
+-- 가격 이력 테이블에 새로운 데이터 입력 시 복사 테이블에 동일 입력
+CREATE OR REPLACE TRIGGER INSERT_PRICE AFTER INSERT ON HISTORY_PRICE FOR EACH ROW
+BEGIN
+ insert into HISTORY_PRICE_copy
+ values (:NEW.p_idx, :NEW.H_PRICE, :NEW.H_DATE);
+END;
+/
+
+-- 가격 이력 테이블(HISTORY_PRICE)에 insert 발생 시 그 가격을 상품 테이블에 nowPrice에 자동으로 넣어주기
+CREATE OR REPLACE TRIGGER UPDATE_NOWPRICE AFTER INSERT ON HISTORY_PRICE FOR EACH ROW FOLLOWS INSERT_PRICE
+BEGIN 
+    update Product
+    set P_NOWPRICE = :NEW.H_PRICE
+    where p_idx = :NEW.p_idx;
+END;
+/

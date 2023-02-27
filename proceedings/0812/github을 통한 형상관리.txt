@@ -1,0 +1,21 @@
+****GitHub 가입 및 초기 설정
+
+1. 가입
+https://github.com/
+
+2. 초대장 수락
+-github계정 가입했던 이메일 확인
+
+3. STS에 Git repository 생성
+-url에 https://github.com/mshlee/UAI_Repository.git 입력
+-아이디 패스워드: 자신의 github 아이디/패스워드
+
+4. java explorer로 탭 변경 후 프로젝트 import
+-import->git->projects from git->existing local repository
+->UAI_Repository->Import existing Eclipse projects
+->프로젝트 디렉토리 체크하고 finish
+
+5. Import 한 프로젝트 파일로 각자 개발
+
+6. 변경 내용 저장
+프로젝트파일 우클릭->team->commit->commit message 입력 (필수)->commit and push->자기 github 아이디/패스워드 입력->commit 완료

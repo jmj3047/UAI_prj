@@ -1,0 +1,558 @@
+
+--최종 DB
+-- 이전 테이블의 제약사항 지우기
+ALTER TABLE Board_Content DROP CONSTRAINT fk_members;
+ALTER TABLE Board_Content DROP CONSTRAINT fk_product;
+ALTER TABLE Board_Content DROP CONSTRAINT FK_admin;
+
+ALTER TABLE Orders DROP CONSTRAINT fk_product2;
+ALTER TABLE Orders DROP CONSTRAINT fk_members2;
+
+
+-- 이전 테이블 지우기
+DROP TABLE Product;
+DROP SEQUENCE Product_Seq;
+DROP TABLE Members;
+DROP SEQUENCE Members_Seq;
+DROP TABLE Admins;
+DROP SEQUENCE Admins_Seq;
+DROP TABLE Files;
+DROP SEQUENCE Files_Seq;
+DROP TABLE Board_Content;
+DROP SEQUENCE Board_Content_Seq;
+DROP TABLE Orders;
+DROP SEQUENCE Orders_Seq;
+
+
+--CREATE TABLE/SEQUENCE 구문
+
+CREATE TABLE Members(
+M_IDX NUMBER(8) PRIMARY KEY,
+M_ID VARCHAR2(40),
+M_PW VARCHAR2(40),
+M_NAME VARCHAR2(40),
+M_NICK VARCHAR2(40),
+M_PHONE VARCHAR2(40),
+M_ADDRESS VARCHAR2(100),
+M_GENDER VARCHAR2(20),      --Gender: M-남성, F-여성
+M_BIRTH DATE,
+M_JOINDATE DATE,
+M_INTEREST1 VARCHAR2(100),      --@@@@@@@@@@@@@@@@@@@@
+M_INTEREST2 VARCHAR2(100),      --@@@@@@@@@@@@@@@@@@@@
+M_INTEREST3 VARCHAR2(100),      --@@@@@@@@@@@@@@@@@@@@
+M_EDUCATION VARCHAR2(100),
+M_MAJOR VARCHAR2(100),
+M_JOB VARCHAR2(40),
+M_MARITALSTATUS VARCHAR2(40)
+);
+SELECT * FROM MEMBERS;
+
+CREATE SEQUENCE Members_Seq;
+
+CREATE TABLE Admins (
+AD_IDX NUMBER(8) PRIMARY KEY,
+AD_ID VARCHAR2(40),
+AD_PW VARCHAR2(40),
+AD_NICK VARCHAR2(40)
+);
+
+CREATE SEQUENCE Admins_Seq;
+drop table Product;
+commit;
+
+CREATE TABLE Product (
+P_IDX NUMBER(8) PRIMARY KEY,
+P_NAME VARCHAR2(100),
+P_TYPE NUMBER(8),       --P_Type: 0-언어, 1-IT/컴퓨터, 2-미술, 3-음악, 4-스포츠, 5-기타
+P_ORIGINALPRICE NUMBER(8),             
+P_NOWPRICE NUMBER(8),           
+P_TEACHER VARCHAR2(40),
+P_MAXSTUDENT NUMBER(8),
+P_STARTDATE DATE,              
+P_LASTDATE DATE,
+P_LOCATION VARCHAR2(40),
+P_LECTUREDAY VARCHAR2(40),      
+P_LECTURETIME VARCHAR2(40),
+P_LECTUREINFO VARCHAR2(2000),    
+P_TEACHERINFO VARCHAR2(2000),   
+P_OTHERINFO VARCHAR2(2000),     
+P_TOTALSALECOUNT NUMBER(8),
+P_POSTDATE DATE,
+P_STARRATE NUMBER(8,2)
+);
+
+
+CREATE TABLE HISTORY_PRICE(
+P_IDX NUMBER(8),
+H_PRICE NUMBER(8),
+H_DATE DATE
+);
+
+CREATE TABLE StarRate(
+S_RATE NUMBER(8),
+P_IDX NUMBER(8),
+M_IDX NUMBER(8)
+);
+
+CREATE SEQUENCE Product_Seq;
+
+
+CREATE TABLE Board_Content (
+B_IDX number(8)PRIMARY KEY,
+B_REFERIDX NUMBER(8),       --@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 이름만 변경하였습니다
+B_TYPE NUMBER(8),       --B_Type: 0-공지사항, 1-리뷰, 2-qna
+B_TITLE VARCHAR2(100),
+B_CONTENT VARCHAR2(1000),
+B_POSTDATE DATE,
+B_COUNT NUMBER(8),
+B_ISHIDDEN NUMBER(8),   --ishidden: 0-no(공개글이다), 1-yes(비밀글이다)
+B_PW VARCHAR2(40),
+B_QCATEGORY NUMBER(8),  --qcategoty: 0-상품문의, 1-결제문의
+B_ISPOST NUMBER(8),     --ispost: 0-no(댓글이다), 1-yes(글이다)
+M_IDX NUMBER(8),
+P_IDX NUMBER(8),
+AD_IDX NUMBER(8),
+M_ID VARCHAR2(20),
+P_NAME VARCHAR2(20)
+);
+
+
+SELECT * FROM Board_Content;
+CREATE SEQUENCE Board_Content_Seq;
+INSERT INTO Board_Content VALUES(Board_Content_Seq.nextval,1,2,12323,123123,SYSDATE,0,0,null,0,1,1,1,0);
+CREATE TABLE Wishlist(
+W_IDX NUMBER(8) PRIMARY KEY,
+M_IDX NUMBER(8),
+P_IDX NUMBER(8),
+W_WISHDATE DATE
+);
+SELECT * FROM Members;
+CREATE SEQUENCE Wishlist_Seq;
+
+CREATE TABLE Files (
+F_IDX NUMBER(8) PRIMARY KEY,
+B_IDX NUMBER(8),
+F_PATH VARCHAR2(1000),
+F_ORIGINALNAME VARCHAR2(1000)
+);
+
+CREATE SEQUENCE Files_Seq;
+
+CREATE TABLE Product_Files(
+F_IDX NUMBER(8) PRIMARY KEY,
+P_IDX NUMBER(8),
+F_PATH VARCHAR2(1000),
+F_ORIGINALNAME VARCHAR2(1000)
+);
+CREATE SEQUENCE Product_Files_Seq;
+
+CREATE TABLE Orders (
+O_IDX NUMBER(8) PRIMARY KEY,
+O_TOTALPRICE NUMBER(8),
+O_DATE DATE,
+O_PAYMENTMETHOD NUMBER(8),   --paymentmethod: 0-무통장, 1-카드
+P_IDX NUMBER(8),
+M_IDX NUMBER(8)
+M_ID VARCHAR2(100),
+P_NAME VARCHAR2(100)
+);
+
+CREATE SEQUENCE Orders_Seq;
+
+CREATE TABLE Orders (
+O_IDX NUMBER(8) PRIMARY KEY,
+O_TOTALPRICE NUMBER(8),
+O_DATE DATE,
+O_PAYMENTMETHOD NUMBER(8),   --paymentmethod: 0-무통장, 1-카드
+P_IDX NUMBER(8),
+M_IDX NUMBER(8)
+);
+SELECT * FROM Orders;
+
+CREATE SEQUENCE Orders_Seq;
+
+CREATE TABLE Purchase (
+O_IDX NUMBER(8) PRIMARY KEY,
+PCH_PAYMENTDATE DATE,
+PCH_ISPAID NUMBER(8),       --ispaid: 0-no(결제안됨), 1-yes(결제됨)
+PCH_TOTALPAYMENT NUMBER(8),
+M_IDX NUMBER(8),
+PC_TEACHER VARCHAR2(40)
+);
+
+
+CREATE TABLE Paycheck_Data (
+O_IDX NUMBER(8) PRIMARY KEY,
+PY_TOTALPAYMENT NUMBER(8),
+PD_TOTALPAYMENTTOTEACHER NUMBER(8), --ispaidtoteacher: 0-no(지급안됨), 1-yes(지급됨)
+PC_TEACHER VARCHAR2(40),
+PD_ISPAIDTOTEACHER NUMBER(8)
+);
+select * from Members;
+drop table paycheck_Data;
+
+SELECT COUNT(*) FROM (SELECT * FROM BOARD_CONTENT, MEMBERS WHERE B_TYPE = 2 
+AND BOARD_CONTENT.M_IDX = MEMBERS.M_IDX AND MEMBERS.M_NICK LIKE '%min%' ORDER BY b_IDX DESC)bd;
+
+SELECT COUNT(*) FROM BOARD_CONTENT WHERE B_TYPE = 2 AND B_TITLE LIKE '%123%'  ORDER BY b_IDX DESC;
+
+commit;
+
+
+
+CREATE TABLE StarRate_copy AS SELECT * FROM StarRate;
+
+--별점 원본 테이블에 새로운 데이터 입력 시 복사 테이블에 동일 입력
+CREATE OR REPLACE TRIGGER INSERT_STAR AFTER INSERT ON StarRate FOR EACH ROW
+BEGIN
+ insert into StarRate_copy
+ values (:NEW.s_rate, :NEW.p_idx, :NEW.m_idx);
+END;
+/
+
+--별점 원본 테이블에 데이터 수정 시 복사 테이블에 동일 입력
+CREATE OR REPLACE TRIGGER UPDATE_STAR AFTER UPDATE ON StarRate FOR EACH ROW
+BEGIN
+  update StarRate_copy
+  set s_rate = :NEW.s_rate
+  where p_idx = :NEW.p_idx and m_idx = :NEW.m_idx;
+END;
+/
+
+--별점 테이블에 insert 발생 시 평점 계산하여 상품 테이블에 update하는 트리거
+
+CREATE OR REPLACE TRIGGER UPDATE_PRODUCT_STAR_1 AFTER INSERT ON StarRate FOR EACH ROW FOLLOWS INSERT_STAR
+BEGIN 
+    update Product
+    set P_STARRATE = (select avg(s_rate) 
+                             from StarRate_copy
+                             group by p_idx
+                             having p_idx = :NEW.p_idx)
+         where p_idx = :NEW.p_idx;
+END;
+/
+--별점 테이블에서 update 발생 시 평점 계산하여 상품 테이블에 update하는 트리거
+
+CREATE OR REPLACE TRIGGER UPDATE_PRODUCT_STAR_2 AFTER UPDATE ON StarRate FOR EACH ROW FOLLOWS UPDATE_STAR
+BEGIN update Product
+         set P_STARRATE = (select avg(s_rate) 
+                             from StarRate_copy
+                             group by p_idx
+                             having p_idx = :NEW.p_idx)
+         where p_idx = :NEW.p_idx;
+END;
+/
+-- 가격 이력 테이블 복사본
+CREATE TABLE HISTORY_PRICE_copy AS SELECT * FROM HISTORY_PRICE;
+
+-- 가격 이력 테이블에 새로운 데이터 입력 시 복사 테이블에 동일 입력
+CREATE OR REPLACE TRIGGER INSERT_PRICE AFTER INSERT ON HISTORY_PRICE FOR EACH ROW
+BEGIN
+ insert into HISTORY_PRICE_copy
+ values (:NEW.p_idx, :NEW.H_PRICE, :NEW.H_DATE);
+END;
+/
+
+-- 가격 이력 테이블(HISTORY_PRICE)에 insert 발생 시 그 가격을 상품 테이블에 nowPrice에 자동으로 넣어주기
+CREATE OR REPLACE TRIGGER UPDATE_NOWPRICE AFTER INSERT ON HISTORY_PRICE FOR EACH ROW FOLLOWS INSERT_PRICE
+BEGIN 
+    update Product
+    set P_NOWPRICE = :NEW.H_PRICE
+    where p_idx = :NEW.p_idx;
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 이전 테이블의 제약사항 지우기
+ALTER TABLE Board_Content DROP CONSTRAINT fk_members;
+ALTER TABLE Board_Content DROP CONSTRAINT fk_product;
+ALTER TABLE Board_Content DROP CONSTRAINT FK_admin;
+
+ALTER TABLE Orders DROP CONSTRAINT fk_product2;
+ALTER TABLE Orders DROP CONSTRAINT fk_members2;
+
+
+-- 이전 테이블 지우기
+DROP TABLE Product;
+DROP SEQUENCE Product_Seq;
+DROP TABLE Members;
+DROP SEQUENCE Members_Seq;
+DROP TABLE Admins;
+DROP SEQUENCE Admin_Seq;
+DROP TABLE Files;
+DROP SEQUENCE Files_Seq;
+DROP TABLE Board_Content;
+DROP SEQUENCE Board_Content_Seq;
+DROP TABLE Orders;
+DROP SEQUENCE Orders_Seq;
+
+
+--CREATE TABLE/SEQUENCE 구문
+
+CREATE TABLE Members(
+M_IDX NUMBER(8) PRIMARY KEY,
+M_ID VARCHAR2(40),
+M_PW VARCHAR2(40),
+M_NAME VARCHAR2(40),
+M_NICK VARCHAR2(40),
+M_PHONE VARCHAR2(40),
+M_ADDRESS VARCHAR2(100),
+M_GENDER VARCHAR2(20),      --Gender: M-남성, F-여성
+M_BIRTH DATE,
+M_JOINDATE DATE,
+M_INTEREST1 VARCHAR2(100),      --@@@@@@@@@@@@@@@@@@@@
+M_INTEREST2 VARCHAR2(100),      --@@@@@@@@@@@@@@@@@@@@
+M_INTEREST3 VARCHAR2(100),      --@@@@@@@@@@@@@@@@@@@@
+M_EDUCATION VARCHAR2(100),
+M_MAJOR VARCHAR2(100),
+M_JOB VARCHAR2(40),
+M_MARITALSTATUS VARCHAR2(40)
+);
+SELECT * FROM MEMBERS;
+
+CREATE SEQUENCE Members_Seq;
+
+CREATE TABLE Admins (
+AD_IDX NUMBER(8) PRIMARY KEY,
+AD_ID VARCHAR2(40),
+AD_PW VARCHAR2(40),
+AD_NICK VARCHAR2(40)
+);
+
+CREATE SEQUENCE Admins_Seq;
+drop table Product;
+commit;
+
+CREATE TABLE Product 
+P_IDX NUMBER(8) PRIMARY KEY,
+P_NAME VARCHAR2(100),
+P_TYPE NUMBER(8),       --P_Type: 0-언어, 1-IT/컴퓨터, 2-미술, 3-음악, 4-스포츠, 5-기타
+P_ORIGINALPRICE NUMBER(8),             
+P_NOWPRICE NUMBER(8),           
+P_TEACHER VARCHAR2(40),
+P_MAXSTUDENT NUMBER(8),
+P_STARTDATE DATE,              
+P_LASTDATE DATE,
+P_LOCATION VARCHAR2(40),
+P_LECTUREDAY VARCHAR2(40),      
+P_LECTURETIME VARCHAR2(40),
+P_LECTUREINFO VARCHAR2(2000),    
+P_TEACHERINFO VARCHAR2(2000),   
+P_OTHERINFO VARCHAR2(2000),     
+P_TOTALSALECOUNT NUMBER(8),
+P_POSTDATE DATE,
+P_STARRATE NUMBER(8,2)
+);
+
+
+CREATE TABLE HISTORY_PRICE(
+P_IDX NUMBER(8),
+H_PRICE NUMBER(8),
+H_DATE DATE
+);
+
+CREATE TABLE StarRate(
+S_RATE NUMBER(8),
+P_IDX NUMBER(8),
+M_IDX NUMBER(8)
+);
+
+CREATE TABLE StarRate_copy AS SELECT * FROM StarRate;
+
+--별점 원본 테이블에 새로운 데이터 입력 시 복사 테이블에 동일 입력
+CREATE OR REPLACE TRIGGER INSERT_STAR AFTER INSERT ON StarRate FOR EACH ROW
+BEGIN
+ insert into StarRate_copy
+ values (:NEW.s_rate, :NEW.p_idx, :NEW.m_idx);
+END;
+/
+
+--별점 원본 테이블에 데이터 수정 시 복사 테이블에 동일 입력
+CREATE OR REPLACE TRIGGER UPDATE_STAR AFTER UPDATE ON StarRate FOR EACH ROW
+BEGIN
+  update StarRate_copy
+  set s_rate = :NEW.s_rate
+  where p_idx = :NEW.p_idx and m_idx = :NEW.m_idx;
+END;
+/
+
+--별점 테이블에 insert 발생 시 평점 계산하여 상품 테이블에 update하는 트리거
+
+CREATE OR REPLACE TRIGGER UPDATE_PRODUCT_STAR_1 AFTER INSERT ON StarRate FOR EACH ROW FOLLOWS INSERT_STAR
+BEGIN 
+    update Product
+    set P_STARRATE = (select avg(s_rate) 
+                             from StarRate_copy
+                             group by p_idx
+                             having p_idx = :NEW.p_idx)
+         where p_idx = :NEW.p_idx;
+END;
+/
+--별점 테이블에서 update 발생 시 평점 계산하여 상품 테이블에 update하는 트리거
+
+CREATE OR REPLACE TRIGGER UPDATE_PRODUCT_STAR_2 AFTER UPDATE ON StarRate FOR EACH ROW FOLLOWS UPDATE_STAR
+BEGIN update Product
+         set P_STARRATE = (select avg(s_rate) 
+                             from StarRate_copy
+                             group by p_idx
+                             having p_idx = :NEW.p_idx)
+         where p_idx = :NEW.p_idx;
+END;
+/
+-- 가격 이력 테이블 복사본
+CREATE TABLE HISTORY_PRICE_copy AS SELECT * FROM HISTORY_PRICE;
+
+-- 가격 이력 테이블에 새로운 데이터 입력 시 복사 테이블에 동일 입력
+CREATE OR REPLACE TRIGGER INSERT_PRICE AFTER INSERT ON HISTORY_PRICE FOR EACH ROW
+BEGIN
+ insert into HISTORY_PRICE_copy
+ values (:NEW.p_idx, :NEW.H_PRICE, :NEW.H_DATE);
+END;
+/
+
+-- 가격 이력 테이블(HISTORY_PRICE)에 insert 발생 시 그 가격을 상품 테이블에 nowPrice에 자동으로 넣어주기
+CREATE OR REPLACE TRIGGER UPDATE_NOWPRICE AFTER INSERT ON HISTORY_PRICE FOR EACH ROW FOLLOWS INSERT_PRICE
+BEGIN 
+    update Product
+    set P_NOWPRICE = :NEW.H_PRICE
+    where p_idx = :NEW.p_idx;
+END;
+
+commit;
+
+drop sequence Product_seq;
+CREATE SEQUENCE Product_Seq;
+ Drop TABLE Product;
+SELECT * FROM Product;
+select * from board_content;
+update board_content set b_idx= 50, b_referIdx= 2, b_type= 3 where b_idx = 49; 
+
+INSERT INTO Product VALUES(Product_Seq.nextval, '초급서핑', 4, 50000, 50000, '유동연', 5, SYSDATE, SYSDATE+2, '강릉', '토', '16:00-18:00', '초급서핑입니다.', '뛰어난 선생님', '최고입니다.', 0, SYSDATE,5);
+INSERT INTO Product VALUES(Product_Seq.nextval, '중급서핑', 4, 50000, 50000, '유동연', 5, SYSDATE, SYSDATE+2, '강릉', '토', '16:00-18:00', '초급서핑입니다.', '뛰어난 선생님', '최고입니다.', 0, SYSDATE,3);
+INSERT INTO Product VALUES(Product_Seq.nextval, '고급서핑', 4, 50000, 50000, '유동연', 5, SYSDATE, SYSDATE+2, '강릉', '토', '16:00-18:00', '초급서핑입니다.', '뛰어난 선생님', '최고입니다.', 0, SYSDATE,4);
+INSERT INTO Product VALUES(Product_Seq.nextval, '초급댄스', 4, 20000, 20000, '유필근', 5, SYSDATE, SYSDATE+2, '강남', '토', '16:00-18:00', '초급댄싱입니다.', '뛰어난 선생님', '최고입니다.', 0, SYSDATE,5);
+INSERT INTO Product VALUES(Product_Seq.nextval, '중급댄스', 4, 20000, 20000, '유필근', 5, SYSDATE, SYSDATE+2, '강남', '토', '16:00-18:00', '중급댄싱입니다.', '뛰어난 선생님', '최고입니다.', 0, SYSDATE,4);
+INSERT INTO Product VALUES(Product_Seq.nextval, '고급댄스', 4, 20000, 20000, '유필근', 5, SYSDATE, SYSDATE+2, '강남', '토', '16:00-18:00', '고급댄싱입니다.', '뛰어난 선생님', '최고입니다.', 0, SYSDATE,5);
+CREATE SEQUENCE Product_Seq;
+select * from Board_Content;
+commit;
+CREATE TABLE Board_Content (
+B_IDX number(8)PRIMARY KEY,
+B_REFERIDX NUMBER(8),       --@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 이름만 변경하였습니다
+B_TYPE NUMBER(8),       --B_Type: 0-공지사항, 1-리뷰, 2-qna
+B_TITLE VARCHAR2(100),
+B_CONTENT VARCHAR2(1000),
+B_POSTDATE DATE,
+B_COUNT NUMBER(8),
+B_ISHIDDEN NUMBER(8),   --ishidden: 0-no(공개글이다), 1-yes(비밀글이다)
+B_PW VARCHAR2(40),
+B_QCATEGORY NUMBER(8),  --qcategoty: 0-상품문의, 1-결제문의
+B_ISPOST NUMBER(8),     --ispost: 0-no(댓글이다), 1-yes(글이다)
+M_IDX NUMBER(8),
+P_IDX NUMBER(8),
+AD_IDX NUMBER(8)
+M_ID NUMBER(8)
+P_NAME VARCHAR2(20)
+);
+commit;
+SELECT * FROM Board_Content;
+CREATE SEQUENCE Board_Content_Seq;
+INSERT INTO Board_Content VALUES(Board_Content_Seq.nextval,1,2,12323,123123,SYSDATE,0,0,null,0,1,1,1,0);
+CREATE TABLE Wishlist(
+W_IDX NUMBER(8) PRIMARY KEY,
+M_IDX NUMBER(8),
+P_IDX NUMBER(8),
+W_WISHDATE DATE
+);
+SELECT * FROM Members;
+CREATE SEQUENCE Wishlist_Seq;
+
+CREATE TABLE Files (
+F_IDX NUMBER(8) PRIMARY KEY,
+B_IDX NUMBER(8),
+F_PATH VARCHAR2(1000),
+F_ORIGINALNAME VARCHAR2(1000)
+);
+
+CREATE SEQUENCE Files_Seq;
+
+CREATE TABLE Product_Files(
+F_IDX NUMBER(8) PRIMARY KEY,
+P_IDX NUMBER(8),
+F_PATH VARCHAR2(1000),
+F_ORIGINALNAME VARCHAR2(1000)
+);
+CREATE SEQUENCE Product_Files_Seq;
+
+CREATE TABLE Orders (
+O_IDX NUMBER(8) PRIMARY KEY,
+O_TOTALPRICE NUMBER(8),
+O_DATE DATE,
+O_PAYMENTMETHOD NUMBER(8),   --paymentmethod: 0-무통장, 1-카드
+P_IDX NUMBER(8),
+M_IDX NUMBER(8)
+M_ID VARCHAR2(100)
+P_NAME VARCHAR2(100)
+);
+
+CREATE SEQUENCE Orders_Seq;
+
+CREATE TABLE Orders (
+O_IDX NUMBER(8) PRIMARY KEY,
+O_TOTALPRICE NUMBER(8),
+O_DATE DATE,
+O_PAYMENTMETHOD NUMBER(8),   --paymentmethod: 0-무통장, 1-카드
+P_IDX NUMBER(8),
+M_IDX NUMBER(8)
+);
+SELECT * FROM Orders;
+
+CREATE SEQUENCE Orders_Seq;
+
+CREATE TABLE Purchase (
+O_IDX NUMBER(8) PRIMARY KEY,
+PCH_PAYMENTDATE DATE,
+PCH_ISPAID NUMBER(8),       --ispaid: 0-no(결제안됨), 1-yes(결제됨)
+PCH_TOTALPAYMENT NUMBER(8),
+M_IDX NUMBER(8),
+PC_TEACHER VARCHAR2(40)
+);
+
+
+CREATE TABLE Paycheck_Data (
+O_IDX NUMBER(8) PRIMARY KEY,
+PY_TOTALPAYMENT NUMBER(8),
+PD_TOTALPAYMENTTOTEACHER NUMBER(8), --ispaidtoteacher: 0-no(지급안됨), 1-yes(지급됨)
+PC_TEACHER VARCHAR2(40),
+PD_ISPAIDTOTEACHER NUMBER(8)
+);
+select * from Members;
+drop table paycheck_Data;
+
+SELECT COUNT(*) FROM (SELECT * FROM BOARD_CONTENT, MEMBERS WHERE B_TYPE = 2 
+AND BOARD_CONTENT.M_IDX = MEMBERS.M_IDX AND MEMBERS.M_NICK LIKE '%min%' ORDER BY b_IDX DESC)bd;
+
+SELECT COUNT(*) FROM BOARD_CONTENT WHERE B_TYPE = 2 AND B_TITLE LIKE '%123%'  ORDER BY b_IDX DESC;
+insert 
+INSERT
+commit;

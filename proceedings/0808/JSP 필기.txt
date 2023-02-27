@@ -1,0 +1,48 @@
+1. jsp 기본 개발환경 설정
+1. apache tomcat8 설치
+zip파일로
+
+2. 기본 워크스페이스 설정
+jsp_workspace 생성 및 경로설정
+window->preferences->general->workspace->text file encoding->UTF-8
+web->css/html/jsp ->utf-8
+
+3. 서버설정
+하단 SERVERS탭
+New servers->apache->tomcat v8.5 server->설치 경로 설정->추가된 서버 더블클릭
+->ports->http port:8000(dns: localhost:8000)->server location 가운데 체크->server option 2번채 체크 (서버설정 xml 파일로 추출)
+
+4. New project/file
+dynamic web project->(new package)->new servlet(=java class)
+
+
+
+******jsp servlet 클래스의 두 객체
+1). request
+client쪽에서 넘어오는 키/값 정보를 담은 객체
+
+2). response
+client쪽으로 넘어가는 키/값 정보를 담은 객체
+
+
+2. API
+1).Request 관련 API
+-getParameter: 넘어온 값을 읽기, return: String
+
+
+2). Response 관련 API
+
+-getWriter (java.io) 서버에 연결된 클라이언트에 out 메소드를 이용해 입력된 컴파일된 코드를 클라이언트의 웹페이지로 전달.
+
+3). 저장과 관련된 API
+-공용 저장 공간의 데이터 입/출력:
+application.setAttribute(key, value)
+application.getAtribute(key, value)
+
+-세션별 저장 공간의 데이터 입/출력:
+session.setAttribute(key, value)
+session.getAttribute(key, value)
+
+-1회용 저장 공간의 데이터 입/출력:
+request.setAttribute(key, value)
+request.getAttribute(key, value)
